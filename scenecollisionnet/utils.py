@@ -205,7 +205,10 @@ def process_mesh(in_path, out_path, scale, grasps, return_stps=True):
     if not os.path.exists(os.path.dirname(out_path)):
         os.makedirs(os.path.dirname(out_path))
 
-    if not mesh.is_watertight or len(mesh.faces) > 1000:
+    # watertight이 아닌 경우 Manifold 라이브러리를 이용해 처리
+    # mesh 개수가 많아 복잡한 격ㅇ우 Simplify 라이브러리를 이용해 처리
+    # http://www.open3d.org/docs/latest/tutorial/Basic/mesh.html#:~:text=intersecting.%20The%20function-,is_watertight,-implements%20this%20check
+    if not mesh.is_watertight or len(mesh.faces) > 1000: 
         obj_path = os.path.splitext(in_path)[0] + ".obj"
         is_obj = os.path.exists(obj_path)
         if not is_obj:
@@ -217,7 +220,7 @@ def process_mesh(in_path, out_path, scale, grasps, return_stps=True):
         )
         manifold_cmd = [
             os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
+                os.path.dirname(os.path.abspath(__file__)), # python 실행 시: __file__, jupyter notebook 실행 시: "__file__"
                 "../extern/Manifold/build/manifold",
             ),
             obj_path,
@@ -225,7 +228,7 @@ def process_mesh(in_path, out_path, scale, grasps, return_stps=True):
         ]
         simplify_cmd = [
             os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
+                os.path.dirname(os.path.abspath(__file__)), # python 실행 시: __file__, jupyter notebook 실행 시: "__file__
                 "../extern/Manifold/build/simplify",
             ),
             "-i",
@@ -296,4 +299,4 @@ def process_mesh(in_path, out_path, scale, grasps, return_stps=True):
         positive_grasps[:, :3, 3] -= mesh_offset
         m_info["grasps"] = positive_grasps
 
-    return os.path.splitext(m_scale)[0], m_info
+    return os.path.splitext(m_scale)[0], m_info # mesh name, mesh
