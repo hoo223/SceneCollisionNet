@@ -22,7 +22,8 @@ RUN apt-get update -y && \
 
 # Install pytorch and pytorch scatter deps (need to match CUDA version)
 RUN pip3 install --no-cache-dir \
-    torch==1.8.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html \
+    torch==1.8.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html 
+RUN pip3 install --no-cache-dir \
     torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
 
 # Build and install pointnet2 dep
