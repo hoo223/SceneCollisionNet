@@ -1,6 +1,6 @@
 model:
   name: self_coll_nn
-  path: /models          # For docker container
+  path: weights/ur10         
 
 trainer:
   device: cuda:0
@@ -12,5 +12,6 @@ trainer:
   momentum: 0.9
 
 dataset:
-  robot_urdf: data/panda/panda.urdf
+  #robot_urdf: data/ur10/ur10_joint_limited_robot_2f85.urdf
+  robot_urdf: data/ur10/ur10_joint_limited_robot.urdf
   batch_size: 256

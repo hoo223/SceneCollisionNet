@@ -1,11 +1,11 @@
-output: /benchmark
+output: benchmark/ur10
 device: cuda:0
 # num_workers: 4        # Defaults to os.cpu_count() if not specified.
 iterations: 250
 
 model:
   name: self_coll_nn
-  path: /models
+  path: weights/ur10
 
 dataset:
   batch_size: 512

@@ -1,4 +1,4 @@
-output: /benchmark
+output: /root/share/pkgs/SceneCollisionNet/benchmark
 vis: 0
 # num_workers: 4        # Defaults to os.cpu_count() if not specified.
 iterations: 1000
@@ -8,7 +8,7 @@ model:
   device: cuda:0
   
 dataset:
-  meshes: /dataset
+  meshes: datasets/shapenet
   batch_size: 1
   query_size: 2048
   trajectories: 16

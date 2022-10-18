@@ -1,15 +1,15 @@
-output: /benchmark
+output: benchmark/pretrained/scene_coll_nn
 device: cuda:0
 # num_workers: 4        # Defaults to os.cpu_count() if not specified. Note: set to 0 if vis=1
 vis: 1                # output visualizations
 iterations: 1000
 
 model:
-  name: scene_coll_net
-  path: /models
+  name: scene_coll_nn
+  path: weights/pretrained
 
 dataset:
-  meshes: /dataset
+  meshes: datasets/shapenet
   batch_size: 1
-  query_size: 64
+  query_size:64 # batch당 query 수
   trajectories: 1
