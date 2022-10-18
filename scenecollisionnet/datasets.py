@@ -341,14 +341,14 @@ class BenchmarkSceneCollisionDataset(IterableSceneCollisionDataset):
             else:
                 yield scene_points, obj_points, trans, rots, colls, coll_time
 
-
+# For self collision dataset
 class IterableRobotCollisionDataset(IterableDataset):
     def __init__(self, robot_urdf, batch_size):
         self.robot = URDF.load(robot_urdf)
         self.batch_size = batch_size
 
         # Get link poses for a series of random configurations
-        low_joint_limits, high_joint_limits = self.robot.joint_limit_cfgs
+        low_joint_limits, high_joint_limits = self.robot.joint_limit_cfgs # The lower-bound and upper-bound joint configuration maps.
         self.low_joint_vals = np.fromiter(
             low_joint_limits.values(), dtype=float
         )
@@ -356,7 +356,9 @@ class IterableRobotCollisionDataset(IterableDataset):
             high_joint_limits.values(), dtype=float
         )
 
-        meshes = self.robot.collision_trimesh_fk().keys()
+        meshes = self.robot.collision_trimesh_fk().keys() # https://urdfpy.readthedocs.io/en/latest/generated/urdfpy.URDF.html#urdfpy.URDF.collision_trimesh_fk:~:text=dict-,collision_trimesh_fk,-(cfg%3DNone
+                                                          # fk를 이용해 충돌이 발생한 trimesh들의 pose를 계산 (base link 기준의 4x4 homogeneous transform matrix)
+                                                          # Return type : dict
         self.link_meshes = list(meshes)
         self.num_links = len(self.link_meshes)
         self.link_combos = list(itertools.combinations(range(len(meshes)), 2))
@@ -364,7 +366,7 @@ class IterableRobotCollisionDataset(IterableDataset):
         # Add the meshes to the collision managers
         self.collision_managers = []
         for m in self.link_meshes:
-            collision_manager = CollisionManager()
+            collision_manager = CollisionManager() # https://trimsh.org/trimesh.collision.html - collision check function
             collision_manager.add_object("link", m)
             self.collision_managers.append(collision_manager)
 
@@ -414,7 +416,7 @@ class IterableRobotCollisionDataset(IterableDataset):
         else:
             dists = np.zeros((self.num_links, self.num_links))
         for _, (i, j) in enumerate(self.link_combos):
-            if abs(i - j) < 2 or ((i, j) == (6, 8)) or ((i, j) == (8, 10)):
+            if abs(i - j) < 2 or ((i, j) == (6, 8)) or ((i, j) == (8, 10)): # (6, 8), (8,10)를 제외하는 이유는? -> panda 로봇의 6, 8, 10 link 확인하기
                 continue
             i_tf = mesh_poses[self.link_meshes[i]][ind]
             self.collision_managers[i].set_transform("link", i_tf)
