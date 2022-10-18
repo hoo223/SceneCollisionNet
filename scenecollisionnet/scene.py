@@ -115,13 +115,15 @@ class SceneManager:
             obj = np.random.choice(list(self.categories[cat]))
         try:
             mesh_path = os.path.join(
-                self._dataset_path, self.mesh_info[obj]["path"].asstr()[()]
+                #self._dataset_path, self.mesh_info[obj]["path"].asstr()[()]
+                self._dataset_path, self.mesh_info[obj]["path"][()]
             )
             mesh = trimesh.load(mesh_path, force="mesh")
             mesh.metadata["key"] = obj
             mesh.metadata["path"] = mesh_path
             info = self.mesh_info[obj]
         except (ValueError, TypeError):
+            print(ValueError, TypeError)
             mesh = None
             info = None
 
@@ -288,7 +290,8 @@ class SceneRenderer:
         norms = point_norm_cloud.normals.data.T.reshape(
             depth.height, depth.width, 3
         )
-        cp = self.get_camera_pose()
+        #cp = self.get_camera_pose()
+        cp = self.camera_pose
         cp[:, 1:3] *= -1
 
         pt_mask = np.logical_and(
