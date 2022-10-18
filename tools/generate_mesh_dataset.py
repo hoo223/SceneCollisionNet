@@ -113,9 +113,9 @@ if __name__ == "__main__":
                     f["meshes"][mk][key] = minfo[key]
 
                 if minfo["category"] not in categories:
-                    categories[minfo["category"]] = [mk]
+                    categories[minfo["category"]] = [mk.encode('utf8')]
                 elif mk not in categories[minfo["category"]]:
-                    categories[minfo["category"]].append(mk)
+                    categories[minfo["category"]].append(mk.encode('utf8'))
 
         for c in categories:
             if c in f["categories"]:

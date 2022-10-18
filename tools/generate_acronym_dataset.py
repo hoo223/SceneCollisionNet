@@ -66,28 +66,37 @@ if __name__ == "__main__":
     executor = ProcessKillingExecutor(max_workers=8)
     generator = executor.map(
         process_mesh,
-        inputs,
+        inputs[6500:],
         timeout=120,
         callback_timeout=process_mesh_timeout,
     )
-
-    categories = {}
+    
     with h5py.File(out_ds_file, "a") as f:
-        f.create_group("meshes")
-        f.create_group("categories")
+        if "meshes" not in f:
+            f.create_group("meshes")
+
+        categories = {}
+        if "categories" not in f:
+            f.create_group("categories")
+
         for mesh_info in tqdm(
             generator, total=len(inputs), desc="Processing Meshes"
         ):
             if mesh_info is not None:
-                mk, minfo = mesh_info
-                f["meshes"].create_group(mk)
+                mk, minfo = mesh_info # mesh name, mesh info
+                if mk not in f["meshes"]:
+                    f["meshes"].create_group(mk)
                 for key in minfo:
-                    f["meshes"][mk][key] = minfo[key]
+                    if key in f["meshes"][mk]:
+                        del f["meshes"][mk][key]
+                    f["meshes"][mk][key] = minfo[key] # path, scale, category, stps, probs, grasps
 
                 if minfo["category"] not in categories:
-                    categories[minfo["category"]] = [mk]
-                else:
-                    categories[minfo["category"]].append(mk)
+                    categories[minfo["category"]] = [mk.encode('utf8')] # string 저장 시 utf8로 인코딩하지 않으면 에러 발생
+                elif mk not in categories[minfo["category"]]:
+                    categories[minfo["category"]].append(mk.encode('utf8')) # string 저장 시 utf8로 인코딩하지 않으면 에러 발생
 
-        for c in categories:
-            f["categories"][c] = categories[c]
+                category = minfo["category"]
+                if category in f["categories"]:
+                    del f["categories"][category]
+                f["categories"][category] = categories[category]
