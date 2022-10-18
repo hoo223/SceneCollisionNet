@@ -80,7 +80,7 @@ setup(
     author="Michael Danielczuk",
     author_email="mdanielczuk@berkeley.edu",
     license="MIT Software License",
-    url="https://github.com/mjd3/SceneCollisionNet",
+    url="https://github.com/NVlabs/SceneCollisionNet",
     keywords="robotics computer vision",
     classifiers=[
         "License :: OSI Approved :: MIT Software License",
