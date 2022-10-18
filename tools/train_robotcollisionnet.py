@@ -72,12 +72,12 @@ if __name__ == "__main__":
     kwargs = {
         "num_workers": config["trainer"]["num_workers"]
         if "num_workers" in config["trainer"]
-        else os.cpu_count(),
+        else os.cpu_count(), # (하히퍼스레딩 된) cpu 개수 
         "pin_memory": True,
         "worker_init_fn": lambda _: np.random.seed(),
     }
     train_set = IterableRobotCollisionDataset(
-        **config["dataset"],
+        **config["dataset"], # robot_urdf, batch_size
     )
     train_loader = DataLoader(train_set, batch_size=None, **kwargs)
 
@@ -99,7 +99,8 @@ if __name__ == "__main__":
         lr=config["trainer"]["lr"],
         momentum=config["trainer"]["momentum"],
     )
-    scaler = GradScaler()
+    scaler = GradScaler() # For automatic mixed precision. 
+                          # Gradient scaling from float 16 to float 32 in backward-pass to prevent underflow in gradient
     if resume:
         optimizer.load_state_dict(checkpoint["optim_state_dict"])
         scaler.load_state_dict(checkpoint["amp"])
